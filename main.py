@@ -42,9 +42,14 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+origins=[
+    "http://localhost:3000",
+    "https://application-nr4q.onrender.com"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust as needed
+    allow_origins=origins,  # Adjust as needed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
