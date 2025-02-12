@@ -44,7 +44,7 @@ app = FastAPI()
 
 origins=[
     "http://localhost:3000",
-    "https://application-nr4q.onrender.com"
+    "https://forntend-gcwl.onrender.com"
 ]
 
 app.add_middleware(
