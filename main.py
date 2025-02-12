@@ -155,7 +155,7 @@ def delete_policy(policy_id: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Policy deleted"}
 
-@app.post("/claim/")
+@app.post("/claim/",dependencies=[Depends(get_current_user)])
 def create_claim(claim: Claim, db: Session = Depends(get_db)):
     policy = db.query(PolicyDB).filter(PolicyDB.id == claim.policy_id).first()
     if not policy:
@@ -169,7 +169,7 @@ def create_claim(claim: Claim, db: Session = Depends(get_db)):
     return db_claim
 
 #,dependencies=[Depends(get_current_user)]
-@app.get("/claims/")
+@app.get("/claims/",dependencies=[Depends(get_current_user)])
 def get_claims(db: Session = Depends(get_db)):
     return db.query(ClaimDB).all()
 
