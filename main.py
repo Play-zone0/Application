@@ -212,8 +212,8 @@ import bcrypt
 from auth import create_jwt_token, get_current_user
 
 # Database setup
-#DATABASE_URL = "postgresql://claims_management_v687_user:EISKLXFO56eMDftFcT9DDZ2XfgKfYXLR@dpg-culf33lsvqrc73ccr0o0-a/claims_management_v687"
-DATABASE_URL = "postgresql://postgres:postgres@localhost/claims_management"
+DATABASE_URL = "postgresql://claims_management_v687_user:EISKLXFO56eMDftFcT9DDZ2XfgKfYXLR@dpg-culf33lsvqrc73ccr0o0-a/claims_management_v687"
+# DATABASE_URL = "postgresql://postgres:postgres@localhost/claims_management"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
