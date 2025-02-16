@@ -210,10 +210,12 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 import bcrypt
 from auth import create_jwt_token, get_current_user
+from prometheus_fastapi_instrumentator import Instrumentator
+import sentry_sdk
 
 # Database setup
-DATABASE_URL = "postgresql://claims_management_v687_user:EISKLXFO56eMDftFcT9DDZ2XfgKfYXLR@dpg-culf33lsvqrc73ccr0o0-a/claims_management_v687"
-# DATABASE_URL = "postgresql://postgres:postgres@localhost/claims_management"
+# DATABASE_URL = "postgresql://claims_management_v687_user:EISKLXFO56eMDftFcT9DDZ2XfgKfYXLR@dpg-culf33lsvqrc73ccr0o0-a/claims_management_v687"
+DATABASE_URL = "postgresql://postgres:postgres@localhost/claims_management"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -249,8 +251,29 @@ class UserDB(Base):
 # Create tables
 Base.metadata.create_all(bind=engine)
 
+from fastapi import FastAPI
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn="https://2274c8809bb98ddec9f28e605a4d05bb@o4508823165009920.ingest.us.sentry.io/4508823170777088",
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for tracing.
+    traces_sample_rate=1.0,
+    _experiments={
+        # Set continuous_profiling_auto_start to True
+        # to automatically start the profiler on when
+        # possible.
+        "continuous_profiling_auto_start": True,
+    },
+)
+
+
 app = FastAPI()
 
+Instrumentator().instrument(app).expose(app)
 origins = [
     "http://localhost:3000",
     "https://forntend-gcwl.onrender.com",
@@ -443,4 +466,4 @@ def delete_claim(claim_id: int, db: Session = Depends(get_db)):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8005)
